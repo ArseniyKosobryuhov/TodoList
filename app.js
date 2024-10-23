@@ -24,6 +24,72 @@ const tasks = [
         title: "Deserunt laborum id consectetur pariatur veniam occaecat occaecat tempor voluptate pariatur nulla reprehenderit ipsum.",
     },
 ];
+const themes = {
+    default: {
+        "--base-text-color": "#212529",
+        "--header-bg": "#007bff",
+        "--header-text-color": "#fff",
+        "--default-btn-bg": "#007bff",
+        "--default-btn-text-color": "#fff",
+        "--default-btn-hover-bg": "#0069d9",
+        "--default-btn-border-color": "#0069d9",
+        "--danger-btn-bg": "#dc3545",
+        "--danger-btn-text-color": "#fff",
+        "--danger-btn-hover-bg": "#bd2130",
+        "--danger-btn-border-color": "#dc3545",
+        "--input-border-color": "#ced4da",
+        "--input-bg-color": "#fff",
+        "--input-text-color": "#495057",
+        "--input-focus-bg-color": "#fff",
+        "--input-focus-text-color": "#495057",
+        "--input-focus-border-color": "#80bdff",
+        "--input-focus-box-shadow": "0 0 0 0.2rem rgba(0, 123, 255, 0.25)",
+    },
+    dark: {
+        "--base-text-color": "#212529",
+        "--header-bg": "#343a40",
+        "--header-text-color": "#fff",
+        "--default-btn-bg": "#58616b",
+        "--default-btn-text-color": "#fff",
+        "--default-btn-hover-bg": "#292d31",
+        "--default-btn-border-color": "#343a40",
+        "--default-btn-focus-box-shadow":
+            "0 0 0 0.2rem rgba(141, 143, 146, 0.25)",
+        "--danger-btn-bg": "#b52d3a",
+        "--danger-btn-text-color": "#fff",
+        "--danger-btn-hover-bg": "#88222c",
+        "--danger-btn-border-color": "#88222c",
+        "--input-border-color": "#ced4da",
+        "--input-bg-color": "#fff",
+        "--input-text-color": "#495057",
+        "--input-focus-bg-color": "#fff",
+        "--input-focus-text-color": "#495057",
+        "--input-focus-border-color": "#78818a",
+        "--input-focus-box-shadow": "0 0 0 0.2rem rgba(141, 143, 146, 0.25)",
+    },
+    light: {
+        "--base-text-color": "#212529",
+        "--header-bg": "#fff",
+        "--header-text-color": "#212529",
+        "--default-btn-bg": "#fff",
+        "--default-btn-text-color": "#212529",
+        "--default-btn-hover-bg": "#e8e7e7",
+        "--default-btn-border-color": "#343a40",
+        "--default-btn-focus-box-shadow":
+            "0 0 0 0.2rem rgba(141, 143, 146, 0.25)",
+        "--danger-btn-bg": "#f1b5bb",
+        "--danger-btn-text-color": "#212529",
+        "--danger-btn-hover-bg": "#ef808a",
+        "--danger-btn-border-color": "#e2818a",
+        "--input-border-color": "#ced4da",
+        "--input-bg-color": "#fff",
+        "--input-text-color": "#495057",
+        "--input-focus-bg-color": "#fff",
+        "--input-focus-text-color": "#495057",
+        "--input-focus-border-color": "#78818a",
+        "--input-focus-box-shadow": "0 0 0 0.2rem rgba(141, 143, 146, 0.25)",
+    },
+};
 
 (function (arrOfTasks) {
     const objOfTasks = arrOfTasks.reduce((acc, task) => {
@@ -31,44 +97,52 @@ const tasks = [
         return acc;
     }, {});
 
-    const listContainer = document.querySelector('.tasks-list-section .list-group');
-    const form = document.forms['addTask'];
-    const inpTitle = form.elements['title'];
-    const inpBody = form.elements['body'];
+    const listContainer = document.querySelector(
+        ".tasks-list-section .list-group"
+    );
+    const form = document.forms["addTask"];
+    const inpTitle = form.elements["title"];
+    const inpBody = form.elements["body"];
+    const themeSelect = document.querySelector("#themeSelect");
+    let lastTheme = 'default';
 
     renderTasks(objOfTasks);
-    form.addEventListener('submit', onSubmitHandler);
-    listContainer.addEventListener('click', onDeleteHandler);
+    form.addEventListener("submit", onSubmitHandler);
+    listContainer.addEventListener("click", onDeleteHandler);
+    themeSelect.addEventListener("change", onChangeThemeHandler);
 
     function renderTasks(tasksList) {
-        if(!tasksList || !listContainer) return;
+        if (!tasksList || !listContainer) return;
 
-        const list = document.querySelector('.list-group');
+        const list = document.querySelector(".list-group");
 
-        if(!list) return;
+        if (!list) return;
 
         const fragment = document.createDocumentFragment();
-        Object.values(tasksList).forEach(task => fragment.append(listItemTpl(task)));
+        Object.values(tasksList).forEach((task) =>
+            fragment.append(listItemTpl(task))
+        );
 
         listContainer.append(fragment);
     }
 
     function listItemTpl({ _id, title, body } = {}) {
-        const li = document.createElement('li');
-        li.className = 'list-group-item d-flex align-items-center flex-wrap mt-2';
+        const li = document.createElement("li");
+        li.className =
+            "list-group-item d-flex align-items-center flex-wrap mt-2";
         li.dataset.taskId = _id;
 
-        const span = document.createElement('span');
+        const span = document.createElement("span");
         span.textContent = title;
-        span.style.fontWeight = 'bold';
+        span.style.fontWeight = "bold";
 
-        const btn = document.createElement('button');
-        btn.setAttribute('type', 'button');
-        btn.className = 'btn btn-danger ml-auto delete-btn';
-        btn.textContent = 'Delete';
+        const btn = document.createElement("button");
+        btn.setAttribute("type", "button");
+        btn.className = "btn btn-danger ml-auto delete-btn";
+        btn.textContent = "Delete";
 
-        const p = document.createElement('p');
-        p.className = 'mt-2 w-100';
+        const p = document.createElement("p");
+        p.className = "mt-2 w-100";
         p.textContent = body;
 
         li.append(span, btn, p);
@@ -82,15 +156,15 @@ const tasks = [
         const inpTitleVal = inpTitle.value;
         const inpBodyVal = inpBody.value;
 
-        if(!inpTitleVal || !inpBodyVal) {
-            alert('Enter title and body task');
+        if (!inpTitleVal || !inpBodyVal) {
+            alert("Enter title and body task");
             return;
         }
 
         const task = createNewTask(inpTitleVal, inpBodyVal);
         const li = listItemTpl(task);
 
-        listContainer.insertAdjacentElement('afterbegin', li);
+        listContainer.insertAdjacentElement("afterbegin", li);
     }
 
     function createNewTask(title, body) {
@@ -98,19 +172,19 @@ const tasks = [
             _id: `task_${Math.random()}`,
             complited: false,
             body,
-            title
+            title,
         };
 
         objOfTasks[newTask._id] = newTask;
 
-        return {...newTask};
+        return { ...newTask };
     }
 
     function deleteTask(id) {
         const { title } = objOfTasks[id];
         const isConfirm = confirm(`Do you want to remove task - ${title}`);
 
-        if(!isConfirm) return;
+        if (!isConfirm) return;
 
         delete objOfTasks[id];
 
@@ -118,16 +192,35 @@ const tasks = [
     }
 
     function deleteTaskFromhtml(confirmed, el) {
-        if(!confirmed) return;
+        if (!confirmed) return;
         el.remove();
     }
 
     function onDeleteHandler({ target }) {
-        if(target.classList.contains('delete-btn')) {
-            const parent = target.closest('[data-task-id]');
+        if (target.classList.contains("delete-btn")) {
+            const parent = target.closest("[data-task-id]");
             const id = parent.dataset.taskId;
             const confirmed = deleteTask(id);
             deleteTaskFromhtml(confirmed, parent);
         }
+    }
+
+    function onChangeThemeHandler(e) {
+        const selectedTheme = themeSelect.value;
+        const isConfirm = confirm(`Do want change this theme on - ${selectedTheme}`);
+        if(!isConfirm) {
+            themeSelect.value = lastTheme;
+            return;
+        }
+        setTheme(selectedTheme);
+        lastTheme = selectedTheme;
+    }
+
+    function setTheme(name) {
+        const selectedThemeObj = themes[name];
+
+        Object.entries(selectedThemeObj).forEach(([key, value]) => {
+            document.documentElement.style.setProperty(key, value)
+        })
     }
 })(tasks);
