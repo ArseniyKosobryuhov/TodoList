@@ -104,8 +104,9 @@ const themes = {
     const inpTitle = form.elements["title"];
     const inpBody = form.elements["body"];
     const themeSelect = document.querySelector("#themeSelect");
-    let lastTheme = 'default';
+    let lastTheme = localStorage.getItem('app_theme') || 'default';
 
+    setTheme(lastTheme);
     renderTasks(objOfTasks);
     form.addEventListener("submit", onSubmitHandler);
     listContainer.addEventListener("click", onDeleteHandler);
@@ -214,6 +215,7 @@ const themes = {
         }
         setTheme(selectedTheme);
         lastTheme = selectedTheme;
+        localStorage.setItem('app_theme', selectedTheme);
     }
 
     function setTheme(name) {
